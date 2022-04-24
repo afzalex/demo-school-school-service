@@ -45,6 +45,7 @@ dependencies {
 	implementation "io.confluent:kafka-avro-serializer:6.1.0"
 
 	implementation 'com.fz.demoschool:core:0.0.1-SNAPSHOT'
+	implementation 'com.fz.demoschool:core-logging:0.0.1-SNAPSHOT'
 }
 
 dependencyManagement {
