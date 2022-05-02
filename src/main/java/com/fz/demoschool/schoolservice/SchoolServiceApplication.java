@@ -1,16 +1,13 @@
 package com.fz.demoschool.schoolservice;
 
-import com.fz.demoschool.schoolservice.config.SchoolProperties;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.kafka.clients.admin.NewTopic;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
-import org.springframework.context.annotation.Bean;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.cloud.openfeign.EnableFeignClients;
 
-@Slf4j
 @ConfigurationPropertiesScan
+@EnableFeignClients
 @SpringBootApplication
 public class SchoolServiceApplication {
 

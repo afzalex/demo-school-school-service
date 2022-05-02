@@ -1,6 +1,6 @@
 package com.fz.demoschool.schoolservice.models;
 
-import com.fz.demoschool.core.TeacherModel;
+import com.fz.demoschool.core.dto.TeacherModel;
 import lombok.Builder;
 import lombok.Data;
 
