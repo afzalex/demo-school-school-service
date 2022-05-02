@@ -33,19 +33,18 @@ dependencies {
 	implementation 'org.springframework.cloud:spring-cloud-starter-config'
 	implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
 	implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
-	implementation 'org.springframework.cloud:spring-cloud-stream'
-	implementation 'org.springframework.cloud:spring-cloud-stream-binder-kafka'
-	implementation 'org.springframework.kafka:spring-kafka'
 	compileOnly 'org.projectlombok:lombok'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	annotationProcessor 'org.projectlombok:lombok'
 
+	implementation 'org.springframework.kafka:spring-kafka'
 	implementation group: 'org.glassfish.jersey.core', name: 'jersey-client', version: '3.0.0'
 	implementation 'org.apache.avro:avro:1.10.2'
 	implementation "io.confluent:kafka-avro-serializer:6.1.0"
 
 	implementation 'com.fz.demoschool:core:0.0.1-SNAPSHOT'
 	implementation 'com.fz.demoschool:core-logging:0.0.1-SNAPSHOT'
+	implementation 'com.fz.demoschool:core-kafka:0.0.1-SNAPSHOT'
 }
 
 dependencyManagement {

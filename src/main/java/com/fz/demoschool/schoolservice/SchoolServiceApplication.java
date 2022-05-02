@@ -17,9 +17,4 @@ public class SchoolServiceApplication {
 		SpringApplication.run(SchoolServiceApplication.class, args);
 	}
 
-
-	@Bean
-	public NewTopic newTopic(SchoolProperties schoolProperties) {
-		return new NewTopic(schoolProperties.getTopicName(), 1, (short)1);
-	}
 }
