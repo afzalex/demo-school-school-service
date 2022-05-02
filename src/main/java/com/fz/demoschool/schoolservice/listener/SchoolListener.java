@@ -9,8 +9,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class SchoolListener {
 
-//    @KafkaListener(topics = "#{'${school.topicName}'}", groupId = "simple-consumer")
-//    public void consume(SchoolEvent schoolEvent) {
-//        log.info("Consuming Kafka Message : {}", schoolEvent);
-//    }
+    @KafkaListener(topics = "#{'${school.topicName}'}", groupId = "simple-consumer")
+    public void consume(SchoolEvent schoolEvent) {
+        log.info("Consuming Kafka Message : {}", schoolEvent);
+    }
 }
