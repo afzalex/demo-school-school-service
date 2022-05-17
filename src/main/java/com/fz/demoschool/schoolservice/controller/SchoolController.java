@@ -1,18 +1,15 @@
 package com.fz.demoschool.schoolservice.controller;
 
 import com.fz.demoschool.avro.SchoolEvent;
-import com.fz.demoschool.core.dto.TeacherModel;
 import com.fz.demoschool.schoolservice.config.SchoolProperties;
 import com.fz.demoschool.schoolservice.feign.TeacherFeignClient;
 import com.fz.demoschool.schoolservice.models.SchoolModel;
+import com.fz.demoschool.schoolservice.repostiory.SchoolRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.UUID;
@@ -24,45 +21,43 @@ import java.util.concurrent.atomic.AtomicInteger;
 @RequiredArgsConstructor
 public class SchoolController {
 
+    private static final String SERVICE_UUID = UUID.randomUUID().toString();
     private final KafkaTemplate<String, SchoolEvent> kafkaTemplate;
     private final SchoolProperties schoolProperties;
+    private final SchoolRepository schoolRepository;
+
+    @Autowired
+    private TeacherFeignClient teacherFeignClient;
 
     private final AtomicInteger counter = new AtomicInteger();
 
     @GetMapping("/ping")
     public String ping() {
-        log.info("I am ping information.");
+        log.info("{} : Ping is working properly in School Service.", SERVICE_UUID);
+        return String.format("%s : Ping is working properly School Service", SERVICE_UUID);
+    }
+
+    @PostMapping
+    public void createSchoolEntity(@RequestBody SchoolModel schoolModel) {
         kafkaTemplate.send(schoolProperties.getTopicName(),
                 SchoolEvent.newBuilder()
                         .setEvent("CREATED")
                         .setUuid(UUID.randomUUID().toString())
-                        .setName("My School " + counter.incrementAndGet())
+                        .setName(schoolModel.getName())
                         .build()
         );
-        return "Ping is working properly";
     }
-
-    private final List<SchoolModel> schoolList = List.of(
-            SchoolModel.builder().id(UUID.randomUUID().toString()).schoolId(1).name("My School 1").build(),
-            SchoolModel.builder().id(UUID.randomUUID().toString()).schoolId(2).name("My School 2").build(),
-            SchoolModel.builder().id(UUID.randomUUID().toString()).schoolId(3).name("My School 3").build()
-    );
 
     @GetMapping
     public List<SchoolModel> getSchoolList(){
-        return schoolList;
+        return schoolRepository.getList();
     }
-
-    @Autowired
-    private TeacherFeignClient teacherFeignClient;
 
     @GetMapping("/{schoolId}")
     public SchoolModel getSchoolInfo(@PathVariable("schoolId") Integer schoolId) {
-        return schoolList.stream().filter(s -> schoolId.equals(s.getSchoolId())).findFirst()
-                .map(s -> {
-                    s.setTeachers(teacherFeignClient.getTeacherList(schoolId));
-                    return s;
-                })
+        return schoolRepository.getList().stream()
+                .filter(s -> schoolId.equals(s.getSchoolId())).findFirst()
+                .map(s -> s.toBuilder().teachers(teacherFeignClient.getTeacherList(schoolId)).build())
                 .get();
     }
 }
