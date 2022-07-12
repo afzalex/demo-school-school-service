@@ -1,5 +1,2 @@
 spring.config.import: optional:configserver:${CONFIG_SERVER_URI:http://localhost:8312/}
 spring.cloud.config.name: common,kafka-adapter,eureka-client,school-service
-
-school:
-  topicName: testtopic01

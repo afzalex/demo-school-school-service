@@ -11,5 +11,5 @@ import org.springframework.boot.context.properties.ConstructorBinding;
 @ConstructorBinding
 @ConfigurationProperties(prefix = "school")
 public class SchoolProperties {
-    private final String topicName;
+    private final String pingMessage;
 }

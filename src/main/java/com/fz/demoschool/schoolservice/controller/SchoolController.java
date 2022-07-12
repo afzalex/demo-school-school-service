@@ -1,6 +1,7 @@
 package com.fz.demoschool.schoolservice.controller;
 
 import com.fz.demoschool.avro.SchoolEvent;
+import com.fz.demoschool.corekafka.config.Constants;
 import com.fz.demoschool.schoolservice.config.SchoolProperties;
 import com.fz.demoschool.schoolservice.feign.TeacherFeignClient;
 import com.fz.demoschool.schoolservice.models.SchoolModel;
@@ -13,33 +14,32 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.atomic.AtomicInteger;
 
+@Slf4j
 @RestController
 @RequestMapping("/school")
-@Slf4j
 @RequiredArgsConstructor
 public class SchoolController {
 
-    private static final String SERVICE_UUID = UUID.randomUUID().toString();
     private final KafkaTemplate<String, SchoolEvent> kafkaTemplate;
     private final SchoolProperties schoolProperties;
     private final SchoolRepository schoolRepository;
+    private final String serviceUUID;
+
 
     @Autowired
     private TeacherFeignClient teacherFeignClient;
 
-    private final AtomicInteger counter = new AtomicInteger();
-
     @GetMapping("/ping")
     public String ping() {
-        log.info("{} : Ping is working properly in School Service.", SERVICE_UUID);
-        return String.format("%s : Ping is working properly School Service", SERVICE_UUID);
+        String message = String.format("%s : Ping is working properly School Service : %s", serviceUUID, schoolProperties.getPingMessage());
+        log.info(message);
+        return message;
     }
 
     @PostMapping
     public void createSchoolEntity(@RequestBody SchoolModel schoolModel) {
-        kafkaTemplate.send(schoolProperties.getTopicName(),
+        kafkaTemplate.send(Constants.TOPIC_SCHOOL_GENERAL_EVENT,
                 SchoolEvent.newBuilder()
                         .setEvent("CREATED")
                         .setUuid(UUID.randomUUID().toString())
@@ -58,6 +58,6 @@ public class SchoolController {
         return schoolRepository.getList().stream()
                 .filter(s -> schoolId.equals(s.getSchoolId())).findFirst()
                 .map(s -> s.toBuilder().teachers(teacherFeignClient.getTeacherList(schoolId)).build())
-                .get();
+                .orElseThrow();
     }
 }
