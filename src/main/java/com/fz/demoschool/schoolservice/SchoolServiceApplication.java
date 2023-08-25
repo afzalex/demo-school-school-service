@@ -2,7 +2,6 @@ package com.fz.demoschool.schoolservice;
 
 import com.fz.demoschool.core.CoreApplication;
 import com.fz.demoschool.corekafka.CoreKafkaApplication;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
